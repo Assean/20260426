@@ -13,54 +13,76 @@
 </head>
 <!-- OK -->
 <body>
-    <div id="app">
-        <p>
-            數字:{{number}}
-        </p>
-        <p>
-            <button @click="number++">+</button>
-            <button @click="number--">-</button>
-            <br>
-            <br>
-            <input v-model="number" type="number">
-        </p>
-        <input type="text" v-model="todoInput">
-        <button @click="addToDoInput">add</button>
-        
-        <div>
-            <ul v-for="(todo, index) in todoList" :key="'todo-' + index">
-                <li @click="delTodo(index)">{{todo}}</li>
-            </ul>
-        </div>
-
-        <div>
-            <ul v-for="(user, index) in users" :key="'list-user-' + index">
-                <li @click="delTodo(index)">{{user.username}}</li>
-            </ul>
-        </div>
-        <hr>
-        <h3>使用者清單</h3>
-        <table id="table" class="table table-hover">
-            <tr>
-                <td>使用者ID</td>
-                <td>使用者名稱</td>
-                <td>使用者權限</td>
-                <td>使用者操作</td>
-            </tr>
-            <tr v-for="(user, index) in users" :key="user.id">
-                <td>{{user.id}}</td>
-                <td>{{user.username}}</td>
-                <td>{{user.role == 1 ? "管理者" : "一般使用者"}}</td>
-                <td>
-                    <div class="btn btn-group">
-                        <button @click="editUser(user)" class="btn btn-warning">編輯</button>
-                        <button @click="delUser(user.id)" class="btn btn-danger">刪除</button>
+    <div id="app" class="container py-4">
+        <div class="row g-4">
+            <div class="col-12 col-lg-6">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h4 class="card-title">數字計算器</h4>
+                        <p class="card-text">目前數字：<strong>{{number}}</strong></p>
+                        <div class="btn-group mb-3" role="group">
+                            <button @click="number++" class="btn btn-primary">+</button>
+                            <button @click="number--" class="btn btn-secondary">-</button>
+                        </div>
+                        <input v-model="number" type="number" class="form-control" placeholder="輸入數字">
                     </div>
-                </td>
-            </tr>
-        </table>
+                </div>
+            </div>
 
-        <button @click="addUser">新增使用者</button>
+            <div class="col-12 col-lg-6">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h4 class="card-title">待辦事項</h4>
+                        <div class="input-group mb-3">
+                            <input type="text" v-model="todoInput" class="form-control" placeholder="輸入待辦項目">
+                            <button @click="addToDoInput" class="btn btn-success">新增</button>
+                        </div>
+                        <ul class="list-group">
+                            <li v-for="(todo, index) in todoList" :key="'todo-' + index" @click="delTodo(index)" class="list-group-item list-group-item-action">
+                                {{todo}}
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h4 class="card-title mb-0">使用者清單</h4>
+                            <button @click="addUser" class="btn btn-primary">新增使用者</button>
+                        </div>
+                        <div class="table-responsive">
+                            <table id="table" class="table table-hover align-middle">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>使用者ID</th>
+                                        <th>使用者名稱</th>
+                                        <th>使用者權限</th>
+                                        <th>操作</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="(user, index) in users" :key="user.id">
+                                        <td>{{user.id}}</td>
+                                        <td>{{user.username}}</td>
+                                        <td>{{user.role == 1 ? '管理者' : '一般使用者'}}</td>
+                                        <td>
+                                            <div class="btn-group" role="group">
+                                                <button @click="editUser(user)" class="btn btn-warning btn-sm">編輯</button>
+                                                <button @click="delUser(user.id)" class="btn btn-danger btn-sm">刪除</button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div id="userModal" class="modal" tabindex="-1">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -71,22 +93,22 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        <p>
-                            <label>使用者名稱</label>
+                        <div class="mb-3">
+                            <label class="form-label">使用者名稱</label>
                             <input class="form-control" type="text" v-model="userData.username">
-                        </p>
-                        <p>
-                            <label>使用者密碼</label>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">使用者密碼</label>
                             <input class="form-control" type="text" v-model="userData.password">
-                        </p>
-                        <p>
-                            <label>使用者權限</label>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">使用者權限</label>
                             <input class="form-control" type="text" v-model="userData.role">
-                        </p>
+                        </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary" @click="saveUserData">Save changes</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">關閉</button>
+                        <button type="button" class="btn btn-primary" @click="saveUserData">儲存</button>
                     </div>
                 </div>
             </div>
