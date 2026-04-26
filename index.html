@@ -59,7 +59,7 @@
             </tr>
         </table>
 
-<!-- ADD NONONO -->
+        <!-- ADD NONONO -->
         <!-- <div id="userModal" class="modal" tabindex="-1">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -89,7 +89,7 @@
                     </div>
                 </div>
             </div> -->
-<!-- AH  NONONONONONONONONON -->
+        <!-- AH  NONONONONONONONONON -->
 
         <div id="userModal" class="modal" tabindex="-1">
             <div class="modal-dialog">
@@ -169,7 +169,7 @@
                     // getUsers();
                 }
 
-                const addUser = ()=>{
+                const addUser = () => {
                     modal_title.value = "新增"
                     userData.value = {
                         id: "",
@@ -199,7 +199,7 @@
 
                         // 新增使用者
 
-                        
+
                         const params = new URLSearchParams(userData.value);
                         const res = await fetch("./sql.php?do=adduser", {
                             method: "POST",
