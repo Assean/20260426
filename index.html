@@ -127,7 +127,17 @@
                 const editUser = (userData) => {
                     console.log(userData)
                     modal_title.value = "編輯"
+                    userData.value = {
+                        id: userDataSend.id,
+                        username: userDataSend.username,
+                        password: userDataSend.password,
+                        role: userDataSend.role
+                    }
+                    $("userModal").modal("show");
+                    // getUsers();
                 }
+
+                
 
 
                 const addToDoInput = () => {
