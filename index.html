@@ -26,17 +26,18 @@
         </p>
         <input type="text" v-model="todoInput">
         <button @click="addToDoInput">add</button>
-        <p>
-        <ul v-for="(todo,index) in todoList">
-            <li @click="delTodo(index)">{{todo}}</li>
-        </ul>
-        </p>
+        
+        <div>
+            <ul v-for="(todo, index) in todoList" :key="'todo-' + index">
+                <li @click="delTodo(index)">{{todo}}</li>
+            </ul>
+        </div>
 
-        <p>
-        <ul v-for="(user,index) in users">
-            <li @click="delTodo(index)">{{user.username}}</li>
-        </ul>
-        </p>
+        <div>
+            <ul v-for="(user, index) in users" :key="'list-user-' + index">
+                <li @click="delTodo(index)">{{user.username}}</li>
+            </ul>
+        </div>
         <hr>
         <h3>使用者清單</h3>
         <table id="table" class="table table-hover">
@@ -46,10 +47,10 @@
                 <td>使用者權限</td>
                 <td>使用者操作</td>
             </tr>
-            <tr v-for="(user,index) in users">
+            <tr v-for="(user, index) in users" :key="user.id">
                 <td>{{user.id}}</td>
                 <td>{{user.username}}</td>
-                <td>{{user.role ==1 ? "管理者" : "一般使用者"}}</td>
+                <td>{{user.role == 1 ? "管理者" : "一般使用者"}}</td>
                 <td>
                     <div class="btn btn-group">
                         <button @click="editUser(user)" class="btn btn-warning">編輯</button>
@@ -102,7 +103,6 @@
                 const users = ref(null)
                 const isLoading = ref(false)
 
-                // 宣告並初始化 userData，供 Modal 表單綁定使用
                 const userData = ref({
                     username: '',
                     password: '',
@@ -113,9 +113,7 @@
                     isLoading.value = true;
                     try {
                         const res = await fetch("./sql.php?do=getusers");
-                        console.log(res)
                         users.value = await res.json();
-                        console.log(users.value)
                     } catch (error) {
                         console.error("API 請求錯誤:", error);
                     } finally {
@@ -124,9 +122,7 @@
                 }
                 getUsers();
 
-
                 const editUser = (userDataSend) => {
-                    console.log(userData)
                     modal_title.value = "編輯"
                     userData.value = {
                         id: userDataSend.id,
@@ -148,46 +144,53 @@
                     $("#userModal").modal("show")
                 }
 
-
                 const delUser = async (id) => {
-                    const res = await fetch("./sql.php?do=deluser&id=" + id);
-                    const result = await res.text();
-                    if (result) {
-                        getUsers();
+                    // 修正 6：補上 try...catch 防呆
+                    try {
+                        const res = await fetch("./sql.php?do=deluser&id=" + id);
+                        const result = await res.text();
+                        if (result) {
+                            getUsers();
+                        }
+                    } catch (error) {
+                        console.error("刪除失敗:", error);
                     }
                 }
 
                 const saveUserData = async () => {
-                    console.log(modal_title)
                     if (userData.value.username == "") {
                         alert("使用者名稱為必填");
-                        return; // 類似中斷指令
+                        return; 
                     }
-                    const parmas = new URLSearchParams(userData.value);
+                    // 修正 6：將拼錯的 parmas 改為 params
+                    const params = new URLSearchParams(userData.value);
 
                     let apiUrl;
                     if (modal_title.value == "編輯") {
-                        // 編輯使用者
                         apiUrl = "./sql.php?do=edituser";
                     } else {
-                        // 新增使用者
                         apiUrl = "./sql.php?do=adduser";
                     }
-                    const res = await fetch(apiUrl, {
-                        method: "POST",
-                        body: parmas
-                    });
+                    
+                    // 修正 6：補上 try...catch 防呆
+                    try {
+                        const res = await fetch(apiUrl, {
+                            method: "POST",
+                            body: params
+                        });
 
-                    const result = await res.text();
-                    if (result) {
-                        $("#userModal").modal("hide");
-                        getUsers();
+                        const result = await res.text();
+                        if (result) {
+                            $("#userModal").modal("hide");
+                            getUsers();
+                        }
+                    } catch (error) {
+                        console.error("儲存失敗:", error);
                     }
                 }
 
                 const addToDoInput = () => {
                     todoList.value.push(todoInput.value);
-                    console.log(todoList.value);
                     todoInput.value = "";
                 }
 
@@ -195,7 +198,6 @@
                     todoList.value.splice(index, 1);
                 }
 
-                // 【修復點 2】：確保 addUser 和 delUser 被加入到 return 之中暴露給模板
                 return {
                     number, todoList, todoInput, addToDoInput, getUsers, users, delTodo,
                     userData, editUser, modal_title, saveUserData, addUser, delUser
