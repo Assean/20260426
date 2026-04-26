@@ -15,6 +15,18 @@ switch ($geturl){
         update users set username='{$_POST['username']}',password='{$_POST['password']}',role='{$_POST['role']}'
         where id = {$_POST['id']}
         ");
-        
+        echo true;
+        break;
+    case "adduser":
+        $user = $pdo->query("
+        insert into users set username='{$_POST['username']}',password='{$_POST['password']}',role='{$_POST['role']}'
+        where id = {$_POST['id']}
+        ");
+        echo true;
+        break;
+    case "deluser":
+        $user_id = $_GET["id"];
+        $pdo->query("DELETE FROM users WHERE id = $user_id");
+        echo true;
         break;
 }
