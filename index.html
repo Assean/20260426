@@ -53,43 +53,12 @@
                 <td>
                     <div class="btn btn-group">
                         <button @click="editUser(user)" class="btn btn-warning">編輯</button>
-                        <button class="btn btn-danger">刪除</button>
+                        <button @click="delUser(user.id)" class="btn btn-danger">刪除</button>
                     </div>
                 </td>
             </tr>
         </table>
 
-        <!-- ADD NONONO -->
-        <!-- <div id="userModal" class="modal" tabindex="-1">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">{{modal_title}}</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <p>
-                            <label>使用者名稱</label>
-                            <input class="form-control" type="text" v-model="userData.username">
-                        </p>
-                        <p>
-                            <label>使用者密碼</label>
-                            <input class="form-control" type="text" v-model="userData.password">
-                        </p>
-                        <p>
-                            <label>使用者權限</label>
-                            <input class="form-control" type="text" v-model="userData.role">
-                        </p>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary" @click="saveUserData">Save changes</button>
-                    </div>
-                </div>
-            </div> -->
-        <!-- AH  NONONONONONONONONON -->
         <button @click="addUser">新增使用者</button>
         <div id="userModal" class="modal" tabindex="-1">
             <div class="modal-dialog">
@@ -166,7 +135,6 @@
                         role: userDataSend.role
                     }
                     $("#userModal").modal("show");
-                    // getUsers();
                 }
 
                 const addUser = () => {
@@ -182,75 +150,41 @@
 
 
                 const delUser = async (id) => {
-                const res = await fetch("./sql.php?do=deluser&id=" + id);
-                const result = await res.text();
-                if (result) {
-                    getUsers();
-                }
+                    const res = await fetch("./sql.php?do=deluser&id=" + id);
+                    const result = await res.text();
+                    if (result) {
+                        getUsers();
+                    }
                 }
 
                 const saveUserData = async () => {
-                console.log(modal_title)
-                if (userData.value.username == "") {
-                    alert("使用者名稱為必填");
-                    return; // 類似中斷指令
+                    console.log(modal_title)
+                    if (userData.value.username == "") {
+                        alert("使用者名稱為必填");
+                        return; // 類似中斷指令
+                    }
+                    const parmas = new URLSearchParams(userData.value);
+
+                    let apiUrl;
+                    if (modal_title.value == "編輯") {
+                        // 編輯使用者
+                        apiUrl = "./sql.php?do=edituser";
+                    } else {
+                        // 新增使用者
+                        apiUrl = "./sql.php?do=adduser";
+                    }
+                    const res = await fetch(apiUrl, {
+                        method: "POST",
+                        body: parmas
+                    });
+
+                    const result = await res.text();
+                    if (result) {
+                        $("#userModal").modal("hide");
+                        getUsers();
+                    }
                 }
-                const parmas = new URLSearchParams(userData.value);
 
-                // 2
-                let apiUrl;
-                if (modal_title.value == "編輯") {
-                    // 編輯使用者
-                    apiUrl = "./sql.php?do=edituser";
-                } else {
-                    // 新增使用者
-                    apiUrl = "./sql.php?do=adduser";
-                }
-                const res = await fetch(apiUrl, {
-                    method: "POST",
-                    body: parmas
-                });
-
-                const result = await res.text();
-                if (result) {
-                    $("#userModal").modal("hide");
-                    getUsers();
-                }
-                }
-
-
-                
-                // const saveUserData = async () => {
-                //     console.log(modal_title)
-                //     if (modal_title.value == "編輯") {
-                //         const params = new URLSearchParams(userData.value);
-                //         let apiUrl;
-                //         const res = await fetch("./sql.php?do=edituser", {
-                //             method: "POST",
-                //             body: params
-                //         });
-                //         const result = await res.text();
-                //         if (result) {
-                //             $("#userModal").modal("hide");
-                //             getUsers();
-                //         }
-                //     } else {
-                //         // 新增使用者
-                //         const params = new URLSearchParams(userData.value);
-                //         const res = await fetch("./sql.php?do=adduser", {
-                //             method: "POST",
-                //             body: params
-                //         });
-                //         const result = await res.text();
-                //         if (result) {
-                //             $("#userModal").modal("hide");
-                //             getUsers();
-                //         }
-                //     }
-                // }
-
-                
-                // 3
                 const addToDoInput = () => {
                     todoList.value.push(todoInput.value);
                     console.log(todoList.value);
@@ -261,10 +195,10 @@
                     todoList.value.splice(index, 1);
                 }
 
-                // 【修復點 2】：確保 saveUserData 被加入到 return 之中
+                // 【修復點 2】：確保 addUser 和 delUser 被加入到 return 之中暴露給模板
                 return {
                     number, todoList, todoInput, addToDoInput, getUsers, users, delTodo,
-                    userData, editUser, modal_title, saveUserData
+                    userData, editUser, modal_title, saveUserData, addUser, delUser
                 }
             }
         }).mount('#app')
