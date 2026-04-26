@@ -1,4 +1,5 @@
 <?php
+// OK
 $dsn="mysql:host=localhost;charset=utf8;dbname=20260426";
 //建立PDO物件
 $pdo=new PDO($dsn,'admin','1234');
