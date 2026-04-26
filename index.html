@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vue-2</title>
+    <script src="./vue.3.5.13.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <p>
+            數字:{{number}}
+        </p>
+        <p>
+            <button @click="number++">+</button>
+            <button @click="number--">-</button>
+            <br>
+            <br>
+            <input v-model="number" type="number">
+        </p>
+        <!-- <p>
+            <input @input="" type="text">
+        </p> -->
+        <!-- <div v-show="">1</div>
+        <div v-if="">2</div> -->
+        <input type="text" v-model="todoInput">
+        <button @click="addToDoInput">add</button>
+        <p>
+        <ul v-for="(todo,index) in todoList">
+            <li @click="delTodo(index)">{{todo}}</li>
+        </ul>
+        </p>
+
+        <p>
+            <ul v-for="(user,index) in users">
+                <li @click="delTodo(index)">{{user.username}}</li>
+            </ul>
+        </p>
+    </div>
+    <script>
+        const { createApp, ref } = Vue;
+        createApp({
+            setup() {
+                const number = ref(10)
+                const todoInput = ref("");
+                const todoList = ref([]);
+
+
+                // 
+                const users = ref(null)
+                const isLoading = ref(false)
+                const getUsers = async () =>{
+                    isLoading.value = true;
+                    try{
+                        const res = await fetch("./sql.php?do=getusers");
+                        console.log(res)
+                        users.value = await res.json();
+                        console.log(users.value)
+                    }finally{
+                        isLoading.value = false;
+                    }
+                }
+                getUsers();
+
+
+
+
+                // 
+                const addToDoInput = () => {
+                    todoList.value.push(todoInput.value);
+                    console.log(todoList.value);
+                    todoInput.value = "";
+                }
+
+                const delTodo = (index) => {
+                    todoList.value.splice(index, 1);
+                }
+                // return { number,todoList,todoInput,addToDoInput,getUsers}
+                return { number, todoList, todoInput, addToDoInput, getUsers, users, delTodo }
+            }
+        }).mount('#app')
+    </script>
+</body>
+
+</html>
