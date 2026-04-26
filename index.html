@@ -58,6 +58,39 @@
                 </td>
             </tr>
         </table>
+
+<!-- ADD NONONO -->
+        <!-- <div id="userModal" class="modal" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">{{modal_title}}</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>
+                            <label>使用者名稱</label>
+                            <input class="form-control" type="text" v-model="userData.username">
+                        </p>
+                        <p>
+                            <label>使用者密碼</label>
+                            <input class="form-control" type="text" v-model="userData.password">
+                        </p>
+                        <p>
+                            <label>使用者權限</label>
+                            <input class="form-control" type="text" v-model="userData.role">
+                        </p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary" @click="saveUserData">Save changes</button>
+                    </div>
+                </div>
+            </div> -->
+<!-- AH  NONONONONONONONONON -->
+
         <div id="userModal" class="modal" tabindex="-1">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -136,12 +169,23 @@
                     // getUsers();
                 }
 
+                const addUser = ()=>{
+                    modal_title.value = "新增"
+                    userData.value = {
+                        id: "",
+                        username: "",
+                        password: "",
+                        role: ""
+                    }
+                }
+
                 const saveUserData = async () => {
                     console.log(modal_title)
                     if (modal_title.value == "編輯") {
                         // 編輯使用者
                         // 【修復點 3】：修正拼字 parmas -> params
                         const params = new URLSearchParams(userData.value);
+                        let apiUrl;
                         const res = await fetch("./sql.php?do=edituser", {
                             method: "POST",
                             body: params
@@ -152,8 +196,20 @@
                             getUsers();
                         }
                     } else {
+
                         // 新增使用者
 
+                        
+                        const params = new URLSearchParams(userData.value);
+                        const res = await fetch("./sql.php?do=adduser", {
+                            method: "POST",
+                            body: params
+                        });
+                        const result = await res.text();
+                        if (result) {
+                            $("#userModal").modal("hide");
+                            getUsers();
+                        }
                     }
                 }
 
