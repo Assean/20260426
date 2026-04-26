@@ -167,7 +167,6 @@
                 }
 
                 const delUser = async (id) => {
-                    // 修正 6：補上 try...catch 防呆
                     try {
                         const res = await fetch("./sql.php?do=deluser&id=" + id);
                         const result = await res.text();
@@ -184,7 +183,6 @@
                         alert("使用者名稱為必填");
                         return; 
                     }
-                    // 修正 6：將拼錯的 parmas 改為 params
                     const params = new URLSearchParams(userData.value);
 
                     let apiUrl;
@@ -193,8 +191,6 @@
                     } else {
                         apiUrl = "./sql.php?do=adduser";
                     }
-                    
-                    // 修正 6：補上 try...catch 防呆
                     try {
                         const res = await fetch(apiUrl, {
                             method: "POST",
