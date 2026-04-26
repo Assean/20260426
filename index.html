@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Vue-2</title>
     <link rel="stylesheet" href="bootstrap.css">
+    <script src="https://code.jquery.com/jquery-3.7.1.slim.min.js" integrity="sha256-kmHvs0B+OpCW5GVHUNjv9rOmY0IvSIRcf7zGUDTDQM8=" crossorigin="anonymous"></script>
     <script src="bootstrap.js"></script>
     <script src="./vue.3.5.13.js"></script>
 </head>
@@ -50,7 +51,7 @@
                 <td>{{user.id ==1 ? "管理者" : "一般使用者"}}</td>
                 <td>
                     <div class="btn btn-group">
-                        <button class="btn btn-warning">編輯</button>
+                        <button @click="editUser(user)" class="btn btn-warning">編輯</button>
                         <button class="btn btn-danger">刪除</button>
                     </div>
                 </td>
@@ -61,7 +62,7 @@
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title">Modal title</h5>
+                            <h5 class="modal-title">Modal_title</h5>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
@@ -122,6 +123,10 @@
                 }
                 getUsers();
 
+                const editUser = (userData) => {
+                    console.log(userData)
+                }
+
                 const addToDoInput = () => {
                     todoList.value.push(todoInput.value);
                     console.log(todoList.value);
@@ -133,7 +138,7 @@
                 }
                 
                 // 【修復點】：確保 userData 被 return
-                return { number, todoList, todoInput, addToDoInput, getUsers, users, delTodo, userData }
+                return { number, todoList, todoInput, addToDoInput, getUsers, users, delTodo, userData,editUser }
             }
         }).mount('#app')
     </script>
