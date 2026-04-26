@@ -9,4 +9,8 @@ switch($geturl){
         $users = $pdo->query("SELECT * FROM users")->fetchAll();
         echo json_encode($users);
         break;
+        case "edituser":
+            $user = $pdo->query("
+            UPDATA user
+            ")
 }
