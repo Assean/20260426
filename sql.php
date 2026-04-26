@@ -11,6 +11,6 @@ switch($geturl){
         break;
         case "edituser":
             $user = $pdo->query("
-            UPDATA user
+            UPDATE user set username={$_POST['username']},password={$_POST['password']}
             ")
 }
