@@ -208,6 +208,11 @@
                     }
                 }
 
+                const filterUsers = computed(() =>{
+                    if(!users.value)return
+                    return users.value.filter(u => JSON.stringify(u).includes(searchQuery.value))
+                })
+
                 const addToDoInput = () => {
                     todoList.value.push(todoInput.value);
                     todoInput.value = "";
