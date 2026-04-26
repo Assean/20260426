@@ -6,7 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Vue-2</title>
     <link rel="stylesheet" href="bootstrap.css">
-    <script src="https://code.jquery.com/jquery-3.7.1.slim.min.js" integrity="sha256-kmHvs0B+OpCW5GVHUNjv9rOmY0IvSIRcf7zGUDTDQM8=" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.slim.min.js"
+        integrity="sha256-kmHvs0B+OpCW5GVHUNjv9rOmY0IvSIRcf7zGUDTDQM8=" crossorigin="anonymous"></script>
     <script src="bootstrap.js"></script>
     <script src="./vue.3.5.13.js"></script>
 </head>
@@ -57,34 +58,32 @@
                 </td>
             </tr>
         </table>
-        <div id="userModal" class="Modal">
-            <div class="modal" tabindex="-1">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title">Modal_title</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            <p>
-                                <label class="form-control">使用者名稱</label>
-                                <input class="form-control" type="text" v-model="userData.username">
-                            </p>
-                            <p>
-                                <label class="form-control">使用者密碼</label>
-                                <input class="form-control" type="password" v-model="userData.password">
-                            </p>
-                            <p>
-                                <label class="form-control">使用者權限</label>
-                                <input class="form-control" type="text" v-model="userData.role">
-                            </p>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-primary">Save changes</button>
-                        </div>
+        <div id="userModal" class="modal" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">{{modal_title}}</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>
+                            <label class="form-control">使用者名稱</label>
+                            <input class="form-control" type="text" v-model="userData.username">
+                        </p>
+                        <p>
+                            <label class="form-control">使用者密碼</label>
+                            <input class="form-control" type="password" v-model="userData.password">
+                        </p>
+                        <p>
+                            <label class="form-control">使用者權限</label>
+                            <input class="form-control" type="text" v-model="userData.role">
+                        </p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary">Save changes</button>
                     </div>
                 </div>
             </div>
@@ -97,7 +96,7 @@
                 const number = ref(10)
                 const todoInput = ref("");
                 const todoList = ref([]);
-
+                const modal_title = ref('')
                 const users = ref(null)
                 const isLoading = ref(false)
 
@@ -115,7 +114,7 @@
                         console.log(res)
                         users.value = await res.json();
                         console.log(users.value)
-                    } catch(error) {
+                    } catch (error) {
                         console.error("API 請求錯誤:", error);
                     } finally {
                         isLoading.value = false;
@@ -124,7 +123,7 @@
                 getUsers();
 
 
-                const editUser = (userData) => {
+                const editUser = (userDataSend) => {
                     console.log(userData)
                     modal_title.value = "編輯"
                     userData.value = {
@@ -133,28 +132,28 @@
                         password: userDataSend.password,
                         role: userDataSend.role
                     }
-                    $("userModal").modal("show");
+                    $("#userModal").modal("show");
                     // getUsers();
                 }
 
                 const saveUserData = async () => {
-                console.log(modal_title)
-                if (modal_title.value == "編輯") {
-                    // 編輯使用者
-                    const parmas = new URLSearchParams(userData.value);
-                    const res = await fetch("./sql.php?do=edituser", {
-                    method: "POST",
-                    body: parmas
-                    });
-                    const result = await res.text();
-                    if (result) {
-                    $("#userModal").modal("hide");
-                    getUsers();
+                    console.log(modal_title)
+                    if (modal_title.value == "編輯") {
+                        // 編輯使用者
+                        const parmas = new URLSearchParams(userData.value);
+                        const res = await fetch("./sql.php?do=edituser", {
+                            method: "POST",
+                            body: parmas
+                        });
+                        const result = await res.text();
+                        if (result) {
+                            $("#userModal").modal("hide");
+                            getUsers();
+                        }
+                    } else {
+                        // 新增使用者
+
                     }
-                } else {
-                    // 新增使用者
-                    
-                }
                 }
 
 
@@ -167,9 +166,9 @@
                 const delTodo = (index) => {
                     todoList.value.splice(index, 1);
                 }
-                
+
                 // 【修復點】：確保 userData 被 return
-                return { number, todoList, todoInput, addToDoInput, getUsers, users, delTodo, userData,editUser }
+                return { number, todoList, todoInput, addToDoInput, getUsers, users, delTodo, userData, editUser, modal_title }
             }
         }).mount('#app')
     </script>
