@@ -137,7 +137,25 @@
                     // getUsers();
                 }
 
-                
+                const saveUserData = async () => {
+                console.log(modal_title)
+                if (modal_title.value == "編輯") {
+                    // 編輯使用者
+                    const parmas = new URLSearchParams(userData.value);
+                    const res = await fetch("./sql.php?do=edituser", {
+                    method: "POST",
+                    body: parmas
+                    });
+                    const result = await res.text();
+                    if (result) {
+                    $("#userModal").modal("hide");
+                    getUsers();
+                    }
+                } else {
+                    // 新增使用者
+                    
+                }
+                }
 
 
                 const addToDoInput = () => {
